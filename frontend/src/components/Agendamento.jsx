@@ -74,9 +74,11 @@ const Agendamento = () => {
         if (validateForm()) {
         
           alert("Agendamento feito com sucesso!");
+          enviarDados
         }
       };
-
+      
+    
       function enviarDados(){
         var cpf = cpf;
         var data = data;
@@ -98,24 +100,23 @@ const Agendamento = () => {
                         <Aten>atendimento.</Aten>
                     </StyledH1>
                 </TextoIntro>
-            </ImageTextContainer>
-
+            </ImageTextContainer> 
 
             <SideBySideContainer>
-                <EnglobaDiv>
+                <EnglobaDiv> 
                     <TextClient>Dados do cliente</TextClient>
 
-                    <Input type="text" value={cpf} placeholder="CPF" onChange={(e) => setCpf(e.target.value)} />
+                    <Input id="cpf" name="cpf" type="text" value={cpf} placeholder="CPF" onChange={(e) => setCpf(e.target.value)} />
                     {error.cpf && <ErrorMessage >{error.cpf}</ErrorMessage >}
-                    <Input type="text" placeholder="Numero do Pedido " value={numeroPedido} onChange={(e) => setNumeroPedido(e.target.value)} />
+                    <Input id="Numero" name="Num" type="text" placeholder="Numero do Pedido " value={numeroPedido} onChange={(e) => setNumeroPedido(e.target.value)} />
                     {error.numeroPedido && <ErrorMessage >{error.numeroPedido}</ErrorMessage >}
                 </EnglobaDiv>
 
                 <StyledDivEngloba>
                     <StyledText>Selecione o Dia</StyledText>
-                    <Input type="date" value={data} onChange={(e) => setData(e.target.value)} />
+                    <Input name="data" type="date" value={data} onChange={(e) => setData(e.target.value)} />
                     {error.data && <ErrorMessage >{error.data}</ErrorMessage >}
-                    <Input type="text" value={selectedTime} placeholder="Selecione um horário" onChange={handleTimeChange} onClick={handleTimeInputClick} />
+                    <Input name="horario" type="text" value={selectedTime} placeholder="Selecione um horário" onChange={handleTimeChange} onClick={handleTimeInputClick} />
                     {error.horario && <ErrorMessage >{error.horario}</ErrorMessage >}
                 </StyledDivEngloba>
             </SideBySideContainer>
@@ -123,7 +124,7 @@ const Agendamento = () => {
             />
 
             <ButtonContainer>
-                <StyledButton onClick={enviarDados}>Agendar</StyledButton>
+                <StyledButton onClick={handleSubmit}>Agendar</StyledButton>
             </ButtonContainer>
         </BackgroundStyle>
     );
@@ -131,4 +132,3 @@ const Agendamento = () => {
 
 export default Agendamento;
              
-
