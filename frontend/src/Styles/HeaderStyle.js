@@ -1,43 +1,51 @@
-import styled from 'styled-components';
+import styled from "styled-components"
 
-
-export const HeaderContainer = styled.header`
-  display: flex;
-  justify-content: space-between;  /* Logo à direita, links à esquerda */
-  align-items: center;
-  padding: 10px 20px;
-  position: fixed;
-  width: 100%;
-  top: 0;
-  z-index: 10;
-  background: transparent;
+export const NavbarSection = styled.section`
+    padding: 20px 50px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 `;
 
-export const Logo = styled.div`
-  font-family: 'Inder', sans-serif;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: white;
-  text-align: left;
+export const Navbar = styled.section`
+    display: flex;
+    align-items: center;
+    `
+
+export const ImgLogo = styled.img`
+    height: auto;
+    width: 60px;
+    margin-right: 6px;
 `;
 
-export const LinksContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;  /* Alinha os links à esquerda */
-  gap: 15px;
-  /* Adiciona z-index para garantir que os links fiquem acima de outros elementos */
-  background: transparent; /* Garante que o fundo seja transparente */
- 
+export const TextLogo = styled.h1`
+    color: white;
+    font-family: "Julius Sans One", sans-serif;
+    font-weight: 200;
+    font-size: 22px;
 `;
 
-export const Link = styled.a`
-  font-family: 'Inder', sans-serif;
-  text-decoration: none;
-  color: #D6C3C3;
-  transition: color 0.3s;
-  position: relative; /* Para garantir que o link não tenha interferência do z-index */
-  
-  &:hover {
-    color: #007bff;
-  }
+export const SpanTextLogo = styled.span`
+    color: pink;
+    font-family: "Julius Sans One", sans-serif;
+    margin-left: 5;
+`;
+
+export const PagesNav = styled.div`
+    display: flex;
+`;
+
+export const TextHeader = styled.h4`
+    color: #D6C3C3;
+    font-family: "Inder", sans-serif;
+    font-size: 15px;
+    font-weight: 300;
+    margin-right: 50px;
+    transition: 0.5s;
+
+    &:hover{
+        cursor: pointer;
+        color: #BC8F8F;
+        font-size: 17px;
+    }
 `;
