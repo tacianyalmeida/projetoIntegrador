@@ -1,16 +1,97 @@
-import React from "react";
-import Header from "./header.jsx";
+import React, { useState } from "react";
+
 import img1 from "../img/img1.png"
+import { Aten, ImageTextContainer, BackgroundStyle, EnglobaDiv, Input, StyledButton, StyledDivEngloba, StyledH1, StyledImage, StyledText, TextClient, TextInput, TextoIntro, SideBySideContainer, ButtonContainer, ErrorMessage  } from "../Styles/Agendamento.js";
+import HorariosModal from "./HorariosModal.jsx";
 
-import { Aten,ImageTextContainer, BackgroundStyle, EnglobaDiv, Input, StyledButton, StyledDivEngloba, StyledH1, StyledImage, StyledText, TextClient, TextInput, TextoIntro } from "../Styles/Agendamento.js";
+
 const Agendamento = () => {
-    return (
 
+    const [isModalOpen, setIsModalOpen] = React.useState(false); 
+    const [selectedTime, setSelectedTime] = React.useState(""); 
+    const [cpf, setCpf] = React.useState("")
+    const [numeroPedido, setNumeroPedido] = React.useState("");
+    const [data, setData] = React.useState("");
+    const [error, setError] = React.useState({
+      cpf: "",
+      numeroPedido: "",
+      horario: "",
+      data: ""
+    });
+    
+    
+    const horariosDisponiveis = [
+        "08:00", "08:15", "08:30", "08:45", "09:00", "09:15", "09:30", "09:45", "10:00", "10:15",
+        "10:30", "10:45", "11:00", "11:15", "11:30", "11:45", "13:00", "13:15", "13:30", "13:45", "14:00",
+        "14:15", "14:30", "14:45", "15:00", "15:15", "15:30", "15:45", "16:00", "16:15", "16:30", "16:45", "17:00"
+    ];
+
+    const handleTimeInputClick = () => {
+        setIsModalOpen(true); 
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false); 
+    };
+
+    const handleSelectTime = (time) => {
+        setSelectedTime(time);
+        setIsModalOpen(false); 
+    };
+    const handleTimeChange = (event) => {
+        setSelectedTime(event.target.value); 
+      };
+
+      const validateForm = () => {
+        let isValid = true;
+        let errors = {};
+    
+        if (!cpf) {
+          errors.cpf = "CPF é obrigatório.";
+          isValid = false;
+        }
+    
+        if (!numeroPedido) {
+          errors.numeroPedido = "Número do pedido é obrigatório.";
+          isValid = false;
+        }
+    
+        if (!data) {
+          errors.data = "Data é obrigatória.";
+          isValid = false;
+        }
+    
+        if (!selectedTime) {
+          errors.horario = "Horário é obrigatório.";
+          isValid = false;
+        }
+    
+        setError(errors);
+        return isValid;
+      };
+      const handleSubmit = (e) => {
+        e.preventDefault(); 
+        if (validateForm()) {
+        
+          alert("Agendamento feito com sucesso!");
+        }
+      };
+
+      function enviarDados(){
+        var cpf = cpf;
+        var data = data;
+
+        var url = "rota da pagina.html?cpf"+ encodeURIComponent(cpf) +"&data"+ encodeURIComponent(data); 
+        window.location.href = url;
+      }
+
+    return (
         <BackgroundStyle>
             <ImageTextContainer className="Image-text-container">
                 <StyledImage src={img1} alt="foto-armonica" />
                 <TextoIntro>
-                    <StyledH1>Reserve um <br />
+                    <StyledH1>
+                        Reserve um <br />
                         horário <br />
                         e garanta o <br />
                         melhor
@@ -20,31 +101,34 @@ const Agendamento = () => {
             </ImageTextContainer>
 
 
-            <EnglobaDiv>
-                <TextClient>Dados do cliente</TextClient>
+            <SideBySideContainer>
+                <EnglobaDiv>
+                    <TextClient>Dados do cliente</TextClient>
 
-                <Input type="text" placeholder="CPF" />
+                    <Input type="text" value={cpf} placeholder="CPF" onChange={(e) => setCpf(e.target.value)} />
+                    {error.cpf && <ErrorMessage >{error.cpf}</ErrorMessage >}
+                    <Input type="text" placeholder="Numero do Pedido " value={numeroPedido} onChange={(e) => setNumeroPedido(e.target.value)} />
+                    {error.numeroPedido && <ErrorMessage >{error.numeroPedido}</ErrorMessage >}
+                </EnglobaDiv>
 
+                <StyledDivEngloba>
+                    <StyledText>Selecione o Dia</StyledText>
+                    <Input type="date" value={data} onChange={(e) => setData(e.target.value)} />
+                    {error.data && <ErrorMessage >{error.data}</ErrorMessage >}
+                    <Input type="text" value={selectedTime} placeholder="Selecione um horário" onChange={handleTimeChange} onClick={handleTimeInputClick} />
+                    {error.horario && <ErrorMessage >{error.horario}</ErrorMessage >}
+                </StyledDivEngloba>
+            </SideBySideContainer>
+            <HorariosModal horarios={horariosDisponiveis} isOpen={isModalOpen} onClose={handleCloseModal} onSelect={handleSelectTime}
+            />
 
-                <Input type="text" placeholder="Numero do Pedido" />
-            </EnglobaDiv>
-
-            <StyledDivEngloba>
-                <StyledText>Selecione o Dia </StyledText>
-                <Input type="date" />
-
-
-
-                <Input type="text" placeholder="Selecione um horário" />
-            </StyledDivEngloba>
-
-
-            <StyledButton>Agendar</StyledButton>
-
+            <ButtonContainer>
+                <StyledButton onClick={enviarDados}>Agendar</StyledButton>
+            </ButtonContainer>
         </BackgroundStyle>
+    );
+};
 
+export default Agendamento;
+             
 
-    )
-}
-
-export default Agendamento; 
