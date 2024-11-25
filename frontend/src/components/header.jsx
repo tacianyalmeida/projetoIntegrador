@@ -1,18 +1,17 @@
-import React from "react";
+// import { NavbarSection, Navbar, ImgLogo, TextLogo, SpanTextLogo, PagesNav, TextHeader } from "../Styles/HeaderStyle.js"
+// import logo from "../Images/logo.png"
 
-import {HeaderContainer, Link,  LinksContainer, Logo} from "../../src/Styles/HeaderStyle.js"
+// const Header = () => {
+//     return(
+//         <NavbarSection>
+//             <Navbar><ImgLogo src={logo}/><TextLogo>Time<SpanTextLogo>Planner</SpanTextLogo></TextLogo></Navbar>
+//             <PagesNav>
+//                 <TextHeader>Atendimento</TextHeader>
+//                 <TextHeader>Horários</TextHeader>
+//                 <TextHeader>Agendamento</TextHeader>
+//             </PagesNav>
+//         </NavbarSection>
+//     )
+// }
 
-const Header = () => {
-    return (
-      <HeaderContainer>
-        <LinksContainer>
-          <Link href="#link1">Agendamento</Link>
-          <Link href="#link2">Horarios</Link>
-          <Link href="#link3">Atendimentos</Link>
-        </LinksContainer>
-        <Logo>Minha Logo</Logo>
-      </HeaderContainer>
-    );
-  };
-
-export default Header; 
+// export default Header
