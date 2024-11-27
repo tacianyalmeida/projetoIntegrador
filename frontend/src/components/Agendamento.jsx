@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import img1 from "../img/img1.png"
 import { Aten, ImageTextContainer, BackgroundStyle, EnglobaDiv, Input, StyledButton, StyledDivEngloba, StyledH1, StyledImage, StyledText, TextClient, TextInput, TextoIntro, SideBySideContainer, ButtonContainer, ErrorMessage  } from "../Styles/Agendamento.js";
 import HorariosModal from "./HorariosModal.jsx";
-
+import { useNavigate } from "react-router-dom";
 
 const Agendamento = () => {
 
@@ -69,23 +69,22 @@ const Agendamento = () => {
         setError(errors);
         return isValid;
       };
+      const navigate = useNavigate();
       const handleSubmit = (e) => {
         e.preventDefault(); 
         if (validateForm()) {
         
           alert("Agendamento feito com sucesso!");
-          enviarDados
+         navigate(`/horarios?cpf=${encodeURIComponent(cpf)}&data=${encodeURIComponent(data)}`);
         }
       };
       
-    
-      function enviarDados(){
-        var cpf = cpf;
-        var data = data;
+   
 
-        var url = "rota da pagina.html?cpf"+ encodeURIComponent(cpf) +"&data"+ encodeURIComponent(data); 
-        window.location.href = url;
-      }
+     
+
+        
+      
 
     return (
         <BackgroundStyle>

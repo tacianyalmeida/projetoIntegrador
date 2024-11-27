@@ -1,10 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
-const Table = ({ cpfData, dateData }) => {
-  const [rows, setRows] = useState([
-    { id: 1, cpf: cpfData || "123.456.789-00", date: dateData || "24/11/2024", startTime: "09:00", endTime: "10:00", isEditing: false },
-    { id: 2, cpf: cpfData || "987.654.321-11", date: dateData || "24/11/2024", startTime: "10:30", endTime: "11:30", isEditing: false },
-  ]);
+const Table = () => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const cpfData = queryParams.get("cpf");
+  const dateData = queryParams.get("data");
+
+  // Recupera os agendamentos do localStorage ou inicializa com dados padrão
+  const [rows, setRows] = useState(() => {
+    const savedRows = localStorage.getItem("rows");
+    return savedRows ? JSON.parse(savedRows) : [
+      { id: 1, cpf: cpfData || '', date: dateData || "24/11/2024", startTime: "09:00", endTime: "10:00", isEditing: false },
+      { id: 2, cpf: cpfData || "987.654.321-11", date: dateData || "24/11/2024", startTime: "10:30", endTime: "11:30", isEditing: false },
+    ];
+  });
 
   // Função para calcular o cronômetro
   const calculateTimer = (startTime, endTime) => {
@@ -21,7 +31,28 @@ const Table = ({ cpfData, dateData }) => {
     return `${hours}:${minutes}`;
   };
 
-  // Função para alternar modo de edição
+  // Função para adicionar um novo agendamento
+  const addAgendamento = (cpf, date, startTime, endTime) => {
+    const newId = rows.length > 0 ? Math.max(...rows.map((row) => row.id)) + 1 : 1;
+
+    const newAgendamento = {
+      id: newId,
+      cpf,
+      date,
+      startTime,
+      endTime,
+      isEditing: false,
+    };
+
+    // Atualiza o estado com o novo agendamento
+    const updatedRows = [...rows, newAgendamento];
+    setRows(updatedRows);
+
+    // Salva no localStorage
+    localStorage.setItem("rows", JSON.stringify(updatedRows));
+  };
+
+  // Função para alternar o modo de edição
   const toggleEdit = (id) => {
     setRows((prevRows) =>
       prevRows.map((row) =>
@@ -37,12 +68,35 @@ const Table = ({ cpfData, dateData }) => {
         row.id === id ? { ...row, [field]: value } : row
       )
     );
+    localStorage.setItem("rows", JSON.stringify(rows)); // Salva os dados no localStorage
   };
 
   // Função para deletar uma linha
   const handleDelete = (id) => {
-    setRows((prevRows) => prevRows.filter((row) => row.id !== id));
+    const updatedRows = rows.filter((row) => row.id !== id);
+    setRows(updatedRows);
+    localStorage.setItem("rows", JSON.stringify(updatedRows));
   };
+
+  // useEffect para atualizar os dados quando cpfData ou dateData mudarem
+  useEffect(() => {
+    if (cpfData || dateData) {
+      // Não substituir os dados existentes, apenas adicionar um novo item com os dados do URL
+      const newAgendamento = {
+        id: rows.length + 1, // Incrementa o ID
+        cpf: cpfData || '',
+        date: dateData || "24/11/2024",
+        startTime: "09:00",
+        endTime: "10:00",
+        isEditing: false,
+      };
+
+      // Adiciona o novo agendamento
+      const updatedRows = [...rows, newAgendamento];
+      setRows(updatedRows);
+      localStorage.setItem("rows", JSON.stringify(updatedRows));
+    }
+  }, [cpfData, dateData]);
 
   return (
     <div style={styles.container}>
@@ -71,49 +125,90 @@ const Table = ({ cpfData, dateData }) => {
         </div>
 
         {/* Dados das linhas */}
-        {rows.map((row) => (
-          <div key={row.id} style={styles.dataRow}>
-            <span style={styles.cell}>{row.cpf}</span>
-            <span style={styles.cell}>{row.date}</span>
-            {row.isEditing ? (
-              <input
-                type="text"
-                value={row.startTime}
-                style={styles.input}
-                onChange={(e) => handleEdit(row.id, "startTime", e.target.value)}
-              />
-            ) : (
-              <span style={styles.cell}>{row.startTime}</span>
-            )}
-            {row.isEditing ? (
-              <input
-                type="text"
-                value={row.endTime}
-                style={styles.input}
-                onChange={(e) => handleEdit(row.id, "endTime", e.target.value)}
-              />
-            ) : (
-              <span style={styles.cell}>{row.endTime}</span>
-            )}
-            <span style={styles.cell}>
-              {calculateTimer(row.startTime, row.endTime)}
-            </span>
-            <div style={styles.actions}>
-              <img
-                src="/edit-icon.png"
-                alt="Editar"
-                style={styles.icon}
-                onClick={() => toggleEdit(row.id)}
-              />
-              <img
-                src="/delete-icon.png"
-                alt="Deletar"
-                style={styles.icon}
-                onClick={() => handleDelete(row.id)}
-              />
+        {rows.length > 0 ? (
+          rows.map((row) => (
+            <div key={row.id} style={styles.dataRow}>
+              <span style={styles.cell}>{row.cpf}</span>
+              <span style={styles.cell}>{row.date}</span>
+              {row.isEditing ? (
+                <input
+                  type="text"
+                  value={row.startTime}
+                  style={styles.input}
+                  onChange={(e) => handleEdit(row.id, "startTime", e.target.value)}
+                />
+              ) : (
+                <span style={styles.cell}>{row.startTime}</span>
+              )}
+              {row.isEditing ? (
+                <input
+                  type="text"
+                  value={row.endTime}
+                  style={styles.input}
+                  onChange={(e) => handleEdit(row.id, "endTime", e.target.value)}
+                />
+              ) : (
+                <span style={styles.cell}>{row.endTime}</span>
+              )}
+              <span style={styles.cell}>
+                {calculateTimer(row.startTime, row.endTime)}
+              </span>
+              <div style={styles.actions}>
+                <img
+                  src="/edit-icon.png"
+                  alt="Editar"
+                  style={styles.icon}
+                  onClick={() => toggleEdit(row.id)}
+                />
+                <img
+                  src="/delete-icon.png"
+                  alt="Deletar"
+                  style={styles.icon}
+                  onClick={() => handleDelete(row.id)}
+                />
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <div style={styles.noData}>Nenhum agendamento encontrado.</div>
+        )}
+
+        {/* Formulário para adicionar novo agendamento */}
+        <div style={styles.addForm}>
+          <input
+            type="text"
+            placeholder="CPF"
+            id="cpfInput"
+            style={styles.input}
+          />
+          <input
+            type="date"
+            id="dateInput"
+            style={styles.input}
+          />
+          <input
+            type="time"
+            id="startTimeInput"
+            style={styles.input}
+          />
+          <input
+            type="time"
+            id="endTimeInput"
+            style={styles.input}
+          />
+          <button
+            style={styles.addButton}
+            onClick={() => {
+              const cpfInput = document.getElementById("cpfInput").value;
+              const dateInput = document.getElementById("dateInput").value;
+              const startTimeInput = document.getElementById("startTimeInput").value;
+              const endTimeInput = document.getElementById("endTimeInput").value;
+              addAgendamento(cpfInput, dateInput, startTimeInput, endTimeInput);
+            }}
+          >
+            Adicionar Agendamento
+          </button>
+        </div>
       </div>
 
       <footer style={styles.footer}>
@@ -122,7 +217,6 @@ const Table = ({ cpfData, dateData }) => {
     </div>
   );
 };
-
 const styles = {
   container: {
     backgroundImage: "url('./background.png')",
